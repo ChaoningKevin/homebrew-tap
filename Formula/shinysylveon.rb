@@ -8,6 +8,7 @@ class Shinysylveon < Formula
   depends_on "qemu"
 
   def install
-    system "./configure", *std_configure_args, "--disable-silent-rules"
+    puts "Hello Kevin!"
+    puts "ShinySylveon installed"
   end
 end
