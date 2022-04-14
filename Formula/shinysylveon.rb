@@ -5,7 +5,7 @@ class Shinysylveon < Formula
   sha256 "e18fbef2ab6e710fa3edb8ad8cbbb128bbe9a9697f220c4f37b4fb3de43a45cc"
   license "Apache-2.0"
 
-  depends_on "qemu"
+  depends_on "https://github.com/ChaoningKevin/ShinySylveonDependencies/blob/main/v1.0/qemu.rb"
 
   def install
     puts "Hello Kevin!"
