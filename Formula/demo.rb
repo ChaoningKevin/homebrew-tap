@@ -1,4 +1,4 @@
-class Shinysylveon < Formula
+class Demo < Formula
   desc "Kevin's homebrew tap to test ruby dependency and version management"
   homepage ""
   url "https://github.com/ChaoningKevin/ShinySylveon/archive/refs/tags/v1.0.tar.gz"
