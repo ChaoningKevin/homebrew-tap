@@ -5,7 +5,7 @@ class Demo < Formula
   sha256 "433ec2326f08aaf72f3fb4a6faa064b0b4d691a1b4e4aa05a09a20b513899c09"
   license "Apache-2.0"
   
-  resource "qemu"
+  resource "qemu" do
     url "https://download.qemu.org/qemu-7.0.0-rc4.tar.xz"
     sha256 "be0cfbb301a969a6242826a069f9c441ddf3620fa28861214a647d581d599aaa" 
   end 
