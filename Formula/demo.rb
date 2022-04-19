@@ -70,10 +70,10 @@ class Demo < Formula
     args << "--enable-gtk" if OS.linux?
     
     resource("qemu").stage{
-      system "./configure", *args}
-    resource("qemu").stage{
+      system "./configure", *args
       system "make", "V=1", "install"
     }
+    
   
     puts "Hello Kevin!"
     puts "ShinySylveon demo installed"
