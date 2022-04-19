@@ -10,8 +10,6 @@ class Demo < Formula
     sha256 "be0cfbb301a969a6242826a069f9c441ddf3620fa28861214a647d581d599aaa" 
   end 
 
-  depends_on "chaoningkevin/homebrew-tap/qemu@6.1.0"
-
   def install
     bin.install "src/HelloWorld.go" 
     
