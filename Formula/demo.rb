@@ -8,7 +8,7 @@ class Demo < Formula
   depends_on "chaoningkevin/homebrew-tap/qemu@6.1.0"
 
   def install
-    bin.install "src/HelloWorld.go"
+    bin.install "src/HelloWorld.go" => "HelloWorld"
     puts "Hello Kevin!"
     puts "ShinySylveon demo installed"
   end
