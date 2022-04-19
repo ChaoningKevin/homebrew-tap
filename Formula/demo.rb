@@ -71,7 +71,9 @@ class Demo < Formula
     
     resource("qemu").stage{
       system "./configure", *args}
-   
+    resource("qemu").stage{
+      system "make", "V=1", "install"
+    }
   
     puts "Hello Kevin!"
     puts "ShinySylveon demo installed"
