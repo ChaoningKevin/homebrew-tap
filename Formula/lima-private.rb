@@ -1,4 +1,4 @@
-require_relative "lib/private"
+require_relative "../lib/private"
 
 class LimaPrivate < Formula
   desc "Linux virtual machines"
