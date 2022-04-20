@@ -1,3 +1,5 @@
+require_relative "lib/private"
+
 class LimaPrivate < Formula
   desc "Linux virtual machines"
   homepage "https://github.com/AnqiPang/lima-private"
