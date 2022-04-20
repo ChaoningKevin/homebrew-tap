@@ -1,8 +1,8 @@
 require_relative "lib/private"
 class DemoPrivate < Formula
-  desc "Kevin's homebrew tap to test ruby dependency and version management", :using => GitHubPrivateRepositoryReleaseDownloadStrategy
+  desc "Kevin's homebrew tap to test ruby dependency and version management"
   homepage ""
-  url "https://github.com/AnqiPang/demo-private/archive/refs/tags/v1.0.1.tar.gz"
+  url "https://github.com/AnqiPang/demo-private/archive/refs/tags/v1.0.1.tar.gz", :using => GitHubPrivateRepositoryReleaseDownloadStrategy
   sha256 "15d9fc76c316e6b4149a3cb7c3863735af1421603c719955ca5af8c84f5707ec"
   license "Apache-2.0"
 
