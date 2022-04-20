@@ -8,7 +8,6 @@ class DemoPrivate < Formula
 
 
   def install
-    bin.install "src/HelloWorld.go"
     puts "ShinySylveon installed"
   end
 end
