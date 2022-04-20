@@ -1,3 +1,5 @@
+require "download_strategy"
+
 # GitHubPrivateRepositoryDownloadStrategy downloads contents from GitHub
 # Private Repository. To use it, add
 # `:using => :github_private_repo` to the URL section of
@@ -30,14 +32,14 @@ class GitHubPrivateRepositoryDownloadStrategy < CurlDownloadStrategy
 
   private
 
-  def _fetch(url:, resolved_url:, timeout:)
+  def _fetch(url:, resolved_url:)
     curl_download download_url, to: temporary_path
   end
 
   def set_github_token
     @github_token = ENV["HOMEBREW_GITHUB_API_TOKEN"]
     unless @github_token
-      raise CurlDownloadStrategyError, "Environmental variable HOMEBREW_GITHUB_API_TOKEN is required."
+      raise CurlDownloadStrategyError, "Environment variable HOMEBREW_GITHUB_API_TOKEN is required."
     end
 
     validate_github_repository_access!
@@ -67,7 +69,7 @@ class GitHubPrivateRepositoryReleaseDownloadStrategy < GitHubPrivateRepositoryDo
   end
 
   def parse_url_pattern
-    url_pattern = %r{https://github.com/([^/]+)/([^/]+)/releases/tag/([^/]+)/(\S+)}
+    url_pattern = %r{https://github.com/([^/]+)/([^/]+)/releases/download/([^/]+)/(\S+)}
     unless @url =~ url_pattern
       raise CurlDownloadStrategyError, "Invalid url pattern for GitHub Release."
     end
@@ -76,15 +78,15 @@ class GitHubPrivateRepositoryReleaseDownloadStrategy < GitHubPrivateRepositoryDo
   end
 
   def download_url
-    "https://api.github.com/repos/#{@owner}/#{@repo}/releases/assets/#{asset_id}"
+    "https://#{@github_token}@api.github.com/repos/#{@owner}/#{@repo}/releases/assets/#{asset_id}"
   end
 
   private
 
-  def _fetch(url:, resolved_url:, timeout:)
+  def _fetch(url:, resolved_url:)
     # HTTP request header `Accept: application/octet-stream` is required.
     # Without this, the GitHub API will respond with metadata, not binary.
-    curl_download download_url, "--header", "Accept: application/octet-stream", "--header", "Authorization: token #{@github_token}", to: temporary_path
+    curl_download download_url, "--header", "Accept: application/octet-stream", to: temporary_path
   end
 
   def asset_id
@@ -101,79 +103,13 @@ class GitHubPrivateRepositoryReleaseDownloadStrategy < GitHubPrivateRepositoryDo
 
   def fetch_release_metadata
     release_url = "https://api.github.com/repos/#{@owner}/#{@repo}/releases/tags/#{@tag}"
-    GitHub::API.open_rest(release_url)
-  end
-end
-
-# ScpDownloadStrategy downloads files using ssh via scp. To use it, add
-# `:using => :scp` to the URL section of your formula or
-# provide a URL starting with scp://. This strategy uses ssh credentials for
-# authentication. If a public/private keypair is configured, it will not
-# prompt for a password.
-#
-# @example
-#   class Abc < Formula
-#     url "scp://example.com/src/abc.1.0.tar.gz"
-#     ...
-class ScpDownloadStrategy < AbstractFileDownloadStrategy
-  def initialize(url, name, version, **meta)
-    super
-    parse_url_pattern
-  end
-
-  def parse_url_pattern
-    url_pattern = %r{scp://([^@]+@)?([^@:/]+)(:\d+)?/(\S+)}
-    if @url !~ url_pattern
-      raise ScpDownloadStrategyError, "Invalid URL for scp: #{@url}"
-    end
-
-    _, @user, @host, @port, @path = *@url.match(url_pattern)
-  end
-
-  def fetch
-    ohai "Downloading #{@url}"
-
-    if cached_location.exist?
-      puts "Already downloaded: #{cached_location}"
-    else
-      system_command! "scp", args: [scp_source, temporary_path.to_s]
-      ignore_interrupts { temporary_path.rename(cached_location) }
-    end
-  end
-
-  def clear_cache
-    super
-    rm_rf(temporary_path)
-  end
-
-  private
-
-  def scp_source
-    path_prefix = "/" unless @path.start_with?("~")
-    port_arg = "-P #{@port[1..-1]} " if @port
-    "#{port_arg}#{@user}#{@host}:#{path_prefix}#{@path}"
+    GitHub.open_api(release_url)
   end
 end
 
 class DownloadStrategyDetector
   class << self
     module Compat
-      def detect(url, using = nil)
-        strategy = super
-        require_aws_sdk if strategy == S3DownloadStrategy
-        strategy
-      end
-
-      def detect_from_url(url)
-        case url
-        when %r{^s3://}
-          S3DownloadStrategy
-        when %r{^scp://}
-          ScpDownloadStrategy
-        else
-          super(url)
-        end
-      end
 
       def detect_from_symbol(symbol)
         case symbol
@@ -181,10 +117,6 @@ class DownloadStrategyDetector
           GitHubPrivateRepositoryDownloadStrategy
         when :github_private_release
           GitHubPrivateRepositoryReleaseDownloadStrategy
-        when :s3
-          S3DownloadStrategy
-        when :scp
-          ScpDownloadStrategy
         else
           super(symbol)
         end
