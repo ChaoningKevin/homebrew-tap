@@ -3,7 +3,8 @@ require_relative "../lib/private"
 class LimaPrivate < Formula
   desc "Linux virtual machines"
   homepage "https://github.com/AnqiPang/lima-private"
-  url "https://github.com/AnqiPang/lima-private/archive/refs/tags/v1.0.0.tar.gz", :using => GitHubPrivateRepositoryReleaseDownloadStrategy
+
+  url "https://github.com/AnqiPang/lima-private/archive/refs/tags/v1.0.0.tar.gz", :using => GitHubPrivateRepositoryDownloadStrategy
   sha256 "82fcb5d272d412147f305622d38adb17658e9a7388c98b0c8198edcd69ab66e7"
   license "Apache-2.0"
   head "https://github.com/AnqiPang/lima-private.git", branch: "master"
