@@ -1,5 +1,5 @@
 
-class Shinysylveon < Formula
+class DemoPrivate < Formula
   desc "Kevin's homebrew tap to test ruby dependency and version management"
   homepage ""
   url "https://github.com/AnqiPang/demo-private/archive/refs/tags/v1.0.1.tar.gz"
